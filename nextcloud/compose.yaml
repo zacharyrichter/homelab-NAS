@@ -27,6 +27,16 @@ services:
       - PUID=99
       - PGID=100
       - MYSQL_ROOT_PASSWORD=changeme
+  redis-nextcloud:
+    image: bitnami/redis:latest
+    networks:
+      - unraid
+    ports:
+      - 6378:6379
+    environment:
+      - ALLOW_EMPTY_PASSWORD:no
+      - Password:changeme
+      - RedisExtraFlags:--auto-aof-rewrite-percentage 100 --auto-aof-rewrite-min-size 64mb
 
 networks:
   borgnet:
