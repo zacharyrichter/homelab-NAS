@@ -1,0 +1,32 @@
+servcies:
+  paperless-ngx:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    restart: unless-stopped
+    networks:
+      - unraid
+    ports:
+      - 8009:8000
+    volumes:
+      - /mnt/cache/appdata/paperless-ngx/data:/usr/src/paperless/data
+      - /mnt/user/documents/:/usr/src/paperless/media
+      - /mnt/user/import/paperless:/usr/src/paperless/consume
+      - /mnt/user/backup/paperless/:/usr/src/paperless/export
+    environment:
+      - PAPERLESS_REDIS=redis://192.168.50.84:6377
+      - PAPERLESS_OCR_LANGUAGE=eng
+      - PAPERLESS_FILENAME_FORMAT={created}-{correspondent}-{title}
+      - PAPERLESS_URL=https://docs.hostname.org
+
+  redis-paperless:
+    image: redis:latest
+    restart: unless-stopped
+    networks:
+      - unraid
+    ports:
+      - 6377:6379
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes: 
+      - cache:/data
+volumes:
+  cache:
+    driver: local
