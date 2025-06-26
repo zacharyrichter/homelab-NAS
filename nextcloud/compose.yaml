@@ -1,0 +1,33 @@
+services:
+  nextcloud:
+    image: lscr.io/linuxserver/nextcloud:latest
+    container_name: nextcloud
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Chicago
+    volumes:
+      - /mnt/appdata/cache/nextcloud/config:/config
+      - /mnt/user/nextcloud:/data
+      - /mnt/user/backup/nextcloud/:/bakcup
+    ports:
+      - 444:443
+    restart: unless-stopped
+    networks:
+      - unraid
+  mariadb:
+    image: linuxserver/mariadb:latest
+    networks:
+      - unraid
+    ports:
+      - 3306:3306
+    volumes:
+      - /mnt/cache/appdata/mariadb:/config
+    environment:
+      - PUID=99
+      - PGID=100
+      - MYSQL_ROOT_PASSWORD=changeme
+
+networks:
+  borgnet:
+    external: true
